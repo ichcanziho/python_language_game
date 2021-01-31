@@ -2,6 +2,7 @@ from core import T2S
 from pathlib import Path
 import pandas as pd
 from random import randint
+from googletrans import Translator
 
 
 class LangMaker(T2S):
@@ -17,11 +18,12 @@ class LangMaker(T2S):
             assert ValueError("you must specify a category before load a frame")
         self.frame = pd.read_csv(f'{cate}/{cate.split("/")[-1]}.csv')
 
-    def make_new_category(self, category_name, example=None) -> None:
+    def make_new_category(self, category_name, example=None, automatic_translate=False) -> None:
         """
         creates a new folder structure for a given language
         :param category_name: the name of the new category to be created
         :param example: you can give a list of words and their translate
+        :param automatic_translate: If True, it is automatic translate a list of words using Google Api translator
         :return: None
         """
         if not (Path(f'{self.lang_folder}/{category_name}').is_dir()):
@@ -32,11 +34,19 @@ class LangMaker(T2S):
                                       self.lang: []})
                 frame.to_csv(f'{self.lang_folder}/{category_name}/{category_name}.csv', index=False)
             else:
-                example = list(zip(*example))
-                original_words = example[0]
-                translate_words = example[1]
-                frame = pd.DataFrame({self.base_lang: original_words,
-                                      self.lang: translate_words})
+                if not automatic_translate:
+                    example = list(zip(*example))
+                    original_words = example[0]
+                    translate_words = example[1]
+                    frame = pd.DataFrame({self.base_lang: original_words,
+                                          self.lang: translate_words})
+                else:
+                    translate_words = self.translate_with_google_api(words=example,
+                                                                     lang_origin=self.base_lang,
+                                                                     lang_destiny=self.lang)
+                    frame = pd.DataFrame({self.base_lang: example,
+                                          self.lang: translate_words})
+
                 frame.to_csv(f'{self.lang_folder}/{category_name}/{category_name}.csv', index=False)
 
                 self.set_category(category_name)
@@ -73,7 +83,15 @@ class LangMaker(T2S):
         translate_word = row[self.lang]
         return base_word, translate_word
 
+    @staticmethod
+    def translate_with_google_api(words, lang_origin, lang_destiny):
+        translator = Translator()
+        translated = []
+        for word in words:
+            word = translator.translate(text=word, dest=lang_destiny, src=lang_origin)
+            translated.append(word.text)
 
+        return translated
 
 
 
