@@ -1,6 +1,7 @@
 from gtts import gTTS
 from playsound import playsound
 from pathlib import Path
+import unidecode
 
 
 class T2S:
@@ -21,11 +22,11 @@ class T2S:
             Path.mkdir(Path(f'{self.root_category}/sounds'))
 
         path = self.text_to_mp3(text=text, slow=slow)
-
         playsound(path)
 
     def text_to_mp3(self, text, slow=False, alarm=False):
         tts = gTTS(text, lang=self.lang, slow=slow)
+        text = unidecode.unidecode(text)
         path = f'{self.root_category}/sounds/{text}.mp3'
         file = Path(path)
         if not (file.is_file()):

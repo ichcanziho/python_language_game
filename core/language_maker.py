@@ -1,8 +1,8 @@
 from core import T2S
 from pathlib import Path
 import pandas as pd
-from random import randint
 from googletrans import Translator
+import os
 
 
 class LangMaker(T2S):
@@ -12,11 +12,13 @@ class LangMaker(T2S):
         super().__init__(lang=lang_folder)
         self.frame = None
 
-    def load_frame(self):
+    def load_frame(self, debug=False):
         cate = self.root_category
         if cate is None:
             assert ValueError("you must specify a category before load a frame")
         self.frame = pd.read_csv(f'{cate}/{cate.split("/")[-1]}.csv')
+        for word in self.frame[self.lang]:
+            self.text_to_mp3(text=word, alarm=debug)
 
     def make_new_category(self, category_name, example=None, automatic_translate=False) -> None:
         """
@@ -27,7 +29,9 @@ class LangMaker(T2S):
         :return: None
         """
         if not (Path(f'{self.lang_folder}/{category_name}').is_dir()):
+
             Path.mkdir(Path(f'{self.lang_folder}/{category_name}'))
+
             Path.mkdir(Path(f'{self.lang_folder}/{category_name}/sounds'))
             if example is None:
                 frame = pd.DataFrame({self.base_lang: [],
@@ -73,15 +77,21 @@ class LangMaker(T2S):
             translate = str(row[self.base_lang].values[0])
             print(translate)
 
-    def make_random_pair(self):
+    def make_random_pairs(self, list_of_pairs):
         if self.frame is None:
             assert ValueError("you must load a frame before translate a word")
 
-        random_index = randint(0, len(self.frame)-1)
-        row = self.frame.iloc[random_index]
-        base_word = row[self.base_lang]
-        translate_word = row[self.lang]
-        return base_word, translate_word
+        original2translate = dict()
+        translate2original = dict()
+
+        for random_index in list_of_pairs:
+            row = self.frame.iloc[random_index]
+            base_word = row[self.base_lang]
+            translate_word = row[self.lang]
+            original2translate[base_word] = translate_word
+            translate2original[translate_word] = base_word
+
+        return original2translate, translate2original
 
     @staticmethod
     def translate_with_google_api(words, lang_origin, lang_destiny):

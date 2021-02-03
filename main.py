@@ -1,8 +1,9 @@
-from core import Game
+from core import GameEasy
+from core import GameNormal
+from core import GameHard
 
-start = Game(lang="en_English", category="colors")
-start.play_rounds(10)
-
+start = GameNormal(lang="fr_French", category="animales", debug=False)
+start.play_rounds(8)
 
 
 
