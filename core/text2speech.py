@@ -39,12 +39,6 @@ class T2S:
         return path
 
 
-if __name__ == "__main__":
-    french = T2S(lang="fr")
-    french.reproduce_text(text="le chat est noir")
-
-
-
 
 
 

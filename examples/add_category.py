@@ -24,14 +24,15 @@ def main(selector):
     if selector == "e":
         create_empty_category("fr_French", "test")
     elif selector == "m":
-        create_manual_category("fr_French", "animales", [["animal", "animal"],
-                                                     ["gato", "chat"]
+        create_manual_category("fr_French", "colores", [["rojo", "rouge"],
+                                                     ["negro", "noir"]
                                                      ])
+
     elif selector == "a":
-        create_automatic_category("fr_French", "test", ["chico", "chica"])
+        create_automatic_category("en_English", "verbos", ["correr", "saltar", "caminar"])
 
 
 if __name__ == "__main__":
-    main("m")
+    main("a")
 
 

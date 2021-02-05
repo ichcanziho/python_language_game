@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from core.GUI import TabSettings
+from core.GUI import TabAddCategory
 
 
 class WindowMananger(tk.Frame):
@@ -11,16 +12,6 @@ class WindowMananger(tk.Frame):
         nb = ttk.Notebook(self.master)
         nb.pack(fill='both', expand='yes')
         TabSettings(nb)
+        TabAddCategory(nb)
 
 
-def main():
-
-    root = tk.Tk()
-    log = WindowMananger(root)
-    log.mainloop()
-
-    print("Program Execution Completed")
-
-
-if __name__ == "__main__":
-    main()

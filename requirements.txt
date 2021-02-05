@@ -33,3 +33,5 @@ Unidecode==1.1.2
 urllib3==1.26.3
 wincertstore==0.2
 wrapt==1.12.1
+pandastable~=0.12.2.post1
+future~=0.18.2

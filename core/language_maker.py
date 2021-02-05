@@ -31,34 +31,34 @@ class LangMaker(T2S):
         if not (Path(f'{self.lang_folder}/{category_name}').is_dir()):
 
             Path.mkdir(Path(f'{self.lang_folder}/{category_name}'))
-
             Path.mkdir(Path(f'{self.lang_folder}/{category_name}/sounds'))
-            if example is None:
-                frame = pd.DataFrame({self.base_lang: [],
-                                      self.lang: []})
-                frame.to_csv(f'{self.lang_folder}/{category_name}/{category_name}.csv', index=False)
-            else:
-                if not automatic_translate:
-                    example = list(zip(*example))
-                    original_words = example[0]
-                    translate_words = example[1]
-                    frame = pd.DataFrame({self.base_lang: original_words,
-                                          self.lang: translate_words})
-                else:
-                    translate_words = self.translate_with_google_api(words=example,
-                                                                     lang_origin=self.base_lang,
-                                                                     lang_destiny=self.lang)
-                    frame = pd.DataFrame({self.base_lang: example,
-                                          self.lang: translate_words})
 
-                frame.to_csv(f'{self.lang_folder}/{category_name}/{category_name}.csv', index=False)
-
-                self.set_category(category_name)
-                for word in translate_words:
-                    self.text_to_mp3(word)
-
+        if example is None:
+            frame = pd.DataFrame({self.base_lang: [],
+                                  self.lang: []})
+            frame.to_csv(f'{self.lang_folder}/{category_name}/{category_name}.csv', index=False)
         else:
-            print("Category:", category_name, "already exists")
+            if not automatic_translate:
+                example = list(zip(*example))
+                original_words = example[0]
+                translate_words = example[1]
+                frame = pd.DataFrame({self.base_lang: original_words,
+                                      self.lang: translate_words})
+            else:
+                translate_words = self.translate_with_google_api(words=example,
+                                                                 lang_origin=self.base_lang,
+                                                                 lang_destiny=self.lang)
+                frame = pd.DataFrame({self.base_lang: example,
+                                      self.lang: translate_words})
+
+            frame.to_csv(f'{self.lang_folder}/{category_name}/{category_name}.csv', index=False)
+
+            self.set_category(category_name)
+            for word in translate_words:
+                self.text_to_mp3(word)
+
+        #else:
+        #    print("Category:", category_name, "already exists")
 
     def translate_word(self, word, reverse=False):
         if self.frame is None:

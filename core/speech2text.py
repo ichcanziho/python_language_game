@@ -35,9 +35,4 @@ class VoiceRecognition:
         return response["transcription"]
 
 
-if __name__ == "__main__":
-    a = VoiceRecognition("fr-FR")
-    while True:
-        z = a.get_text_from_mic()
-        print(z)
 
