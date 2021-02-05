@@ -16,7 +16,6 @@ class TabSettings:
         else:
             with open("settings.json") as json_file:
                 self.current_settings = json.load(json_file)
-                print(self.current_settings)
 
         self.languages = None
         self.categories = None
@@ -129,7 +128,6 @@ class TabSettings:
         file = open("settings.json", "w")
         file.write(values)
         file.close()
-        print(self.current_settings)
 
     #######################################
     #                Statics              #

@@ -1,10 +1,10 @@
-from core.GUI.tables import make_table
 from core import LangMaker
 import pandas as pd
 import tkinter as tk
 from tkinter import ttk
 from pathlib import Path
 from tkinter import messagebox
+import tkinter.scrolledtext as scrolledtext
 
 
 class TabAddCategory:
@@ -25,20 +25,35 @@ class TabAddCategory:
         self.make_mode_box()
         self.make_save_button()
 
-        self.target_lang = self.languages_box.get().split("_")[0]
+        self.make_source_input()
+
         self.manual_mode = {"es": ["hola"], self.target_lang: ["hi"]}
         self.auto_mode = {"es": ["hola"]}
         self.current_mode = self.manual_mode
 
-        self.inputs_frame = tk.LabelFrame(self.window, text="Ejemplos")
-        self.inputs_frame.grid(row=0, column=1, padx=10)
-
-        self.table = make_table(self.inputs_frame, pd.DataFrame(self.current_mode), width=180,
-                                height=150, editable=True)
-
     #######################################
     #            Widget Section           #
     #######################################
+
+    def make_source_input(self):
+
+        self.target_lang = self.languages_box.get().split("_")[0]
+
+        self.inputs_frame = tk.LabelFrame(self.window, text="Ejemplos")
+        self.inputs_frame.grid(row=0, column=1, padx=10)
+
+        self.lb_base_lang = tk.Label(self.inputs_frame, text="es")
+        self.lb_base_lang.grid(row=0, column=0)
+
+        self.textBox_source = scrolledtext.ScrolledText(self.inputs_frame, height=10, width=10)
+        self.textBox_source.grid(row=1, column=0)
+
+        self.lb_target_lang = tk.Label(self.inputs_frame, text=self.target_lang)
+        self.lb_target_lang.grid(row=0, column=1)
+
+        self.textBox_output = scrolledtext.ScrolledText(self.inputs_frame, height=10, width=10)
+        self.textBox_output.grid(row=1, column=1)
+
     def make_languages_box(self):
 
         self.read_lang_available()
@@ -53,9 +68,13 @@ class TabAddCategory:
     def make_category_name_input(self):
         self.lb_category = tk.Label(self.settings_frame, text="Nombre de la Categoria")
         self.lb_category.pack()
-        self.in_category = tk.Entry(self.settings_frame, width=22)
+        auxFrame = tk.Frame(self.settings_frame)
+        auxFrame.pack()
+        self.in_category = tk.Entry(auxFrame, width=18)
         self.in_category.insert(0, "test")
-        self.in_category.pack()
+        self.in_category.pack(side=tk.LEFT)
+        self.bt_search = tk.Button(auxFrame, text="?", bg='turquoise2', command=self.check_for_category)
+        self.bt_search.pack(side=tk.LEFT)
 
     def make_mode_box(self):
         self.modes = ["manual", "auto"]
@@ -78,22 +97,49 @@ class TabAddCategory:
         if self.in_category.get() == '':
             messagebox.showerror("Error", "Necesitas ponerle nombre a tu categoria")
         else:
-            dataFrame = self.table.model.df
+            source = self.textBox_source.get('1.0', "end")
+            source = source.split("\n")
+            source = [word for word in source if word != ""]
+            target = self.textBox_output.get('1.0', "end")
+            target = target.split("\n")
+            target = [word for word in target if word != ""]
             language = LangMaker(lang_folder=self.languages_box.get())
             if self.modes_box.get() == "manual":
-                words = []
-                for ori, target in zip(dataFrame['es'], dataFrame[self.target_lang]):
-                    words.append([ori, target])
+                if len(target) == len(source):
+                    words = []
+                    for ori, tar in zip(source, target):
+                        words.append([ori, tar])
 
-                language.make_new_category(category_name=self.in_category.get(),
-                                           example=words, automatic_translate=False)
+                    language.make_new_category(category_name=self.in_category.get(),
+                                               example=words, automatic_translate=False)
 
+                else:
+                    tk.messagebox.showerror("Error", "En el modo manual debes \ntraducir todas las palabras.")
             else:
-                words = list(dataFrame['es'])
-                print(words)
                 language.make_new_category(category_name=self.in_category.get(),
-                                           example=words, automatic_translate=True)
+                                           example=source, automatic_translate=True)
+
             messagebox.showinfo("Correcto", "Tus palabras han sido agregadas :D")
+            self.textBox_source.delete("1.0", tk.END)
+            self.textBox_output.delete("1.0", tk.END)
+            self.bt_search.config(state="normal")
+
+    def check_for_category(self):
+        path = f'languages/{self.languages_box.get()}/{self.in_category.get()}'
+        file = Path(path)
+        if file.is_dir():
+            tk.messagebox.showinfo("Correcto", "Esta categoria ya existe. \nSe cargaran los datos anteriores.")
+            self.bt_search.config(state="disable")
+            self.target_lang = self.languages_box.get().split("_")[0]
+            frame = pd.read_csv(f'{path}/{self.in_category.get()}.csv')
+            base_words = list(frame['es'])
+            target_words = list(frame[self.target_lang])
+            base_words = '\n'.join(base_words)
+            target_words = '\n'.join(target_words)
+            self.textBox_source.insert(tk.END, base_words)
+            self.textBox_output.insert(tk.END, target_words)
+        else:
+            tk.messagebox.showinfo("Correcto", "Esta categoria es completamente nueva")
 
     def language_changed(self, event):
         self.target_lang = self.languages_box.get().split("_")[0]
@@ -102,19 +148,16 @@ class TabAddCategory:
             self.current_mode = self.manual_mode
         else:
             self.current_mode = self.auto_mode
-
-        self.table.destroy()
-        self.table = make_table(self.inputs_frame, pd.DataFrame(self.current_mode), width=180,
-                                height=150,editable=True)
+        self.lb_target_lang = tk.Label(self.inputs_frame, text=self.target_lang)
+        self.lb_target_lang.grid(row=0, column=1)
 
     def mode_changed(self, event):
         if self.modes_box.get() == "manual":
             self.current_mode = self.manual_mode
+            self.textBox_output.config(state="normal")
         else:
             self.current_mode = self.auto_mode
-        self.table.destroy()
-        self.table = make_table(self.inputs_frame, pd.DataFrame(self.current_mode), width=180,
-                                height=150,editable=True)
+            self.textBox_output.config(state="disabled")
 
     def read_lang_available(self):
         self.languages = self.getDocuments("languages")
