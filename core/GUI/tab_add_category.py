@@ -76,6 +76,7 @@ class TabAddCategory:
         self.bt_search = tk.Button(auxFrame, text="?", bg='turquoise2', command=self.check_for_category)
         self.bt_search.pack(side=tk.LEFT)
 
+
     def make_mode_box(self):
         self.modes = ["manual", "auto"]
 
@@ -91,6 +92,7 @@ class TabAddCategory:
     def make_save_button(self):
         self.bt_save = tk.Button(self.settings_frame, text="Guardar", command=self.save_settings)
         self.bt_save.pack(pady=10)
+        self.bt_save.config(state="disable")
 
     def save_settings(self):
 
@@ -123,6 +125,7 @@ class TabAddCategory:
             self.textBox_source.delete("1.0", tk.END)
             self.textBox_output.delete("1.0", tk.END)
             self.bt_search.config(state="normal")
+            self.bt_save.config(state="disable")
 
     def check_for_category(self):
         path = f'languages/{self.languages_box.get()}/{self.in_category.get()}'
@@ -140,6 +143,7 @@ class TabAddCategory:
             self.textBox_output.insert(tk.END, target_words)
         else:
             tk.messagebox.showinfo("Correcto", "Esta categoria es completamente nueva")
+        self.bt_save.config(state="normal")
 
     def language_changed(self, event):
         self.target_lang = self.languages_box.get().split("_")[0]
