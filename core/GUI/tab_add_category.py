@@ -45,13 +45,13 @@ class TabAddCategory:
         self.lb_base_lang = tk.Label(self.inputs_frame, text="es")
         self.lb_base_lang.grid(row=0, column=0)
 
-        self.textBox_source = scrolledtext.ScrolledText(self.inputs_frame, height=10, width=10)
+        self.textBox_source = scrolledtext.ScrolledText(self.inputs_frame, height=9.5, width=10)
         self.textBox_source.grid(row=1, column=0)
 
         self.lb_target_lang = tk.Label(self.inputs_frame, text=self.target_lang)
         self.lb_target_lang.grid(row=0, column=1)
 
-        self.textBox_output = scrolledtext.ScrolledText(self.inputs_frame, height=10, width=10)
+        self.textBox_output = scrolledtext.ScrolledText(self.inputs_frame, height=9.5, width=10)
         self.textBox_output.grid(row=1, column=1)
 
     def make_languages_box(self):

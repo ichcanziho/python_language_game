@@ -13,9 +13,9 @@ class TabSettings:
         file = Path("./settings.json")
         if not file.is_file():
             self.set_default_settings()
-        else:
-            with open("settings.json") as json_file:
-                self.current_settings = json.load(json_file)
+
+        with open("settings.json") as json_file:
+            self.current_settings = json.load(json_file)
 
         self.languages = None
         self.categories = None
