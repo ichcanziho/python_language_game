@@ -8,6 +8,18 @@ from tkinter import messagebox
 class TabSettings:
 
     def __init__(self, nb):
+        self.languages = None
+        self.categories = None
+        self.lb_language = None
+        self.languages_box = None
+        self.lb_category = None
+        self.categories_box = None
+        self.difficulties = None
+        self.lb_difficulty = None
+        self.difficulties_box = None
+        self.lb_quantity = None
+        self.in_quantity = None
+        self.bt_save = None
         self.nb = nb
         self.window = ttk.Frame(self.nb)
         file = Path("./settings.json")
@@ -17,15 +29,11 @@ class TabSettings:
         with open("settings.json") as json_file:
             self.current_settings = json.load(json_file)
 
-        self.languages = None
-        self.categories = None
-
         self.make_languages_box()
         self.make_categories_box()
         self.make_difficulty_box()
         self.make_questions_input()
         self.make_save_button()
-
         self.nb.add(self.window, text='Settings')
 
     #######################################
@@ -45,7 +53,7 @@ class TabSettings:
         lang_pos = self.current_settings['target_lang']
         try:
             lang_pos = self.languages.index(lang_pos)
-        except Exception:
+        except ValueError:
             lang_pos = 0
 
         self.languages_box.current(lang_pos)
@@ -62,7 +70,7 @@ class TabSettings:
         cate_pos = self.current_settings['category']
         try:
             cate_pos = self.categories.index(cate_pos)
-        except Exception:
+        except ValueError:
             cate_pos = 0
 
         self.categories_box.current(cate_pos)

@@ -11,7 +11,6 @@ class VoiceRecognition:
         self.lang = lang
 
     def get_text_from_mic(self):
-        print("Te escucho:")
 
         with self.microphone as source:
             self.recognizer.adjust_for_ambient_noise(source)
@@ -33,6 +32,3 @@ class VoiceRecognition:
             return "repeat please"
 
         return response["transcription"]
-
-
-

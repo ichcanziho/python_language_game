@@ -21,7 +21,6 @@ class TabPlay:
 
         self.bt_play = None
         self.make_start_button()
-
         self.nb.add(self.window, text='Play')
 
     def make_start_button(self):

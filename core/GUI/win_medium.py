@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import messagebox
-from playsound import playsound
 from core.GUI.win_base import WindowBase
 
 
@@ -17,23 +16,6 @@ class WindowMedium(WindowBase):
         self.update_turns_passed()
         self.make_hint_label()
         self.update_hint(":)")
-
-    def send_button_action(self, event=None):
-
-        if self.button_flag:
-            self.turns_played += 1
-            self.verify_answer()
-            self.in_answer.delete("0", tk.END)
-            self.bt_play.config(text="Continuar", bg="turquoise")
-            self.button_flag = False
-            self.in_answer.config(state="disable")
-            self.update_turns_passed()
-        else:
-            self.button_flag = True
-            self.in_answer.config(state="normal")
-            self.bt_play.config(text="Probar", bg="bisque")
-            self.update_hint(":)")
-            self.verify_game_ends()
 
     def verify_game_ends(self):
         if self.turns_played == self.rounds:
@@ -52,5 +34,3 @@ class WindowMedium(WindowBase):
                 self.master.destroy()
         else:
             self.update_sentence()
-
-

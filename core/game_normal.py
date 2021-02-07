@@ -30,5 +30,3 @@ class GameNormal(Game):
             print("que sad :(")
             print("la respuesta correcta es:", target)
             self.corrections[self.original_word] = self.target_word
-
-

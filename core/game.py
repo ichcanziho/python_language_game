@@ -61,6 +61,3 @@ class Game:
             return translate_word, base_word, key_base_words
         else:
             return base_word, translate_word, key_translate_words
-
-
-

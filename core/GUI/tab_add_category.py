@@ -31,6 +31,8 @@ class TabAddCategory:
         self.auto_mode = {"es": ["hola"]}
         self.current_mode = self.manual_mode
 
+        self.base_words_loaded = []
+        self.target_words_loaded = []
     #######################################
     #            Widget Section           #
     #######################################
@@ -76,7 +78,6 @@ class TabAddCategory:
         self.bt_search = tk.Button(auxFrame, text="?", bg='turquoise2', command=self.check_for_category)
         self.bt_search.pack(side=tk.LEFT)
 
-
     def make_mode_box(self):
         self.modes = ["manual", "auto"]
 
@@ -96,15 +97,26 @@ class TabAddCategory:
 
     def save_settings(self):
 
+        self.flag_error_manual = False
         if self.in_category.get() == '':
             messagebox.showerror("Error", "Necesitas ponerle nombre a tu categoria")
         else:
             source = self.textBox_source.get('1.0', "end")
             source = source.split("\n")
+            clean_source = []
             source = [word for word in source if word != ""]
+            clean_source = [word for word in source if word not in clean_source]
+            source = clean_source
             target = self.textBox_output.get('1.0', "end")
             target = target.split("\n")
             target = [word for word in target if word != ""]
+
+            new_target_words = [word for word in target if word not in self.target_words_loaded]
+            new_base_words = [word for word in source if word not in self.base_words_loaded]
+
+            source = new_base_words
+            target = new_target_words
+
             language = LangMaker(lang_folder=self.languages_box.get())
             if self.modes_box.get() == "manual":
                 if len(target) == len(source):
@@ -117,26 +129,38 @@ class TabAddCategory:
 
                 else:
                     tk.messagebox.showerror("Error", "En el modo manual debes \ntraducir todas las palabras.")
+                    self.flag_error_manual = True
             else:
                 language.make_new_category(category_name=self.in_category.get(),
                                            example=source, automatic_translate=True)
 
-            messagebox.showinfo("Correcto", "Tus palabras han sido agregadas :D")
-            self.textBox_source.delete("1.0", tk.END)
-            self.textBox_output.delete("1.0", tk.END)
-            self.bt_search.config(state="normal")
-            self.bt_save.config(state="disable")
+            if not self.flag_error_manual:
+                messagebox.showinfo("Correcto", "Tus palabras han sido agregadas :D")
+                self.textBox_output.config(state="normal")
+                self.textBox_source.delete("1.0", tk.END)
+                self.textBox_output.delete("1.0", tk.END)
+                self.bt_search.config(state="normal")
+                self.bt_save.config(state="disable")
+                self.in_category.config(state="normal")
+            if self.modes_box.get() == "auto":
+                self.textBox_output.config(state="disable")
+
 
     def check_for_category(self):
         path = f'languages/{self.languages_box.get()}/{self.in_category.get()}'
         file = Path(path)
+        self.textBox_output.config(state="normal")
         if file.is_dir():
             tk.messagebox.showinfo("Correcto", "Esta categoria ya existe. \nSe cargaran los datos anteriores.")
             self.bt_search.config(state="disable")
+            self.in_category.config(state="disable")
             self.target_lang = self.languages_box.get().split("_")[0]
             frame = pd.read_csv(f'{path}/{self.in_category.get()}.csv')
             base_words = list(frame['es'])
             target_words = list(frame[self.target_lang])
+            self.base_words_loaded = base_words
+            self.target_words_loaded = target_words
+
             base_words = '\n'.join(base_words)
             target_words = '\n'.join(target_words)
             self.textBox_source.insert(tk.END, base_words)
@@ -144,6 +168,9 @@ class TabAddCategory:
         else:
             tk.messagebox.showinfo("Correcto", "Esta categoria es completamente nueva")
         self.bt_save.config(state="normal")
+        if self.modes_box.get() == "auto":
+            self.textBox_output.config(state="disable")
+
 
     def language_changed(self, event):
         self.target_lang = self.languages_box.get().split("_")[0]
@@ -152,8 +179,11 @@ class TabAddCategory:
             self.current_mode = self.manual_mode
         else:
             self.current_mode = self.auto_mode
+
         self.lb_target_lang = tk.Label(self.inputs_frame, text=self.target_lang)
         self.lb_target_lang.grid(row=0, column=1)
+
+
 
     def mode_changed(self, event):
         if self.modes_box.get() == "manual":

@@ -2,7 +2,6 @@ from core import T2S
 from pathlib import Path
 import pandas as pd
 from googletrans import Translator
-import os
 
 
 class LangMaker(T2S):
@@ -51,14 +50,17 @@ class LangMaker(T2S):
                 frame = pd.DataFrame({self.base_lang: example,
                                       self.lang: translate_words})
 
+            file = Path(f'{self.lang_folder}/{category_name}/{category_name}.csv')
+
+            if file.is_file():
+                old_frame = pd.read_csv(f'{self.lang_folder}/{category_name}/{category_name}.csv')
+                frame = pd.concat([old_frame, frame], axis=0)
+
             frame.to_csv(f'{self.lang_folder}/{category_name}/{category_name}.csv', index=False)
 
             self.set_category(category_name)
             for word in translate_words:
                 self.text_to_mp3(word)
-
-        #else:
-        #    print("Category:", category_name, "already exists")
 
     def translate_word(self, word, reverse=False):
         if self.frame is None:
@@ -98,10 +100,9 @@ class LangMaker(T2S):
         translator = Translator()
         translated = []
         for word in words:
+            # iso639-1 for add new languages
             word = translator.translate(text=word, dest=lang_destiny, src=lang_origin)
-            translated.append(word.text)
+            word = word.text.lower()
+            translated.append(word)
 
         return translated
-
-
-

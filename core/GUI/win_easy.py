@@ -8,7 +8,11 @@ class WindowEasy(WindowBase):
 
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
-        # self.master.geometry('300x300')
+        self.bt_option_1 = None
+        self.bt_option_2 = None
+        self.bt_option_3 = None
+        self.bt_option_4 = None
+        self.word_choice = None
         self.make_sentence_label()
         self.update_sentence()
         self.make_answer_buttons()

@@ -9,6 +9,8 @@ class WindowHard(WindowBase):
 
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
+        self.bt_play_word = None
+        self.bt_listen = None
         self.vr = VoiceRecognition(lang=self.game.language.lang)
         self.master.geometry('300x300')
         self.make_sentence_label()
@@ -28,24 +30,24 @@ class WindowHard(WindowBase):
         self.bt_play_word = tk.Button(auxFrame, text="Reproducir", width=12, bg="linen",
                                       command=self.action_play_word)
         self.bt_play_word.pack(side=tk.LEFT, padx=5)
-        self.bt_lisent = tk.Button(auxFrame, text="Hablar", width=12, bg="PaleTurquoise1",
-                                   command=self.action_bt_lisent)
-        self.bt_lisent.pack(side=tk.LEFT, padx=5)
+        self.bt_listen = tk.Button(auxFrame, text="Hablar", width=12, bg="PaleTurquoise1",
+                                   command=self.action_bt_listen)
+        self.bt_listen.pack(side=tk.LEFT, padx=5)
 
     def update_options_buttons(self):
         if self.reverse_option:
-            self.bt_lisent.config(state="disable")
+            self.bt_listen.config(state="disable")
             self.bt_play_word.config(state="normal")
             self.in_answer.config(state="normal")
         else:
-            self.bt_lisent.config(state="normal")
+            self.bt_listen.config(state="normal")
             self.bt_play_word.config(state="disable")
             self.in_answer.config(state="disable")
 
     def action_play_word(self):
         self.game.language.reproduce_text(self.source)
 
-    def action_bt_lisent(self):
+    def action_bt_listen(self):
         self.in_answer.config(state="normal")
         self.in_answer.delete(0, "end")
         self.in_answer.config(state="disable")
@@ -53,25 +55,6 @@ class WindowHard(WindowBase):
         self.in_answer.config(state="normal")
         self.in_answer.insert(0, source)
         self.in_answer.config(state="disable")
-        print(source)
-
-
-    def send_button_action(self, event=None):
-
-        if self.button_flag:
-            self.turns_played += 1
-            self.verify_answer()
-            self.in_answer.delete("0", tk.END)
-            self.bt_play.config(text="Continuar", bg="turquoise")
-            self.button_flag = False
-            self.in_answer.config(state="disable")
-            self.update_turns_passed()
-        else:
-            self.button_flag = True
-            self.in_answer.config(state="normal")
-            self.bt_play.config(text="Probar", bg="bisque")
-            self.update_hint(":)")
-            self.verify_game_ends()
 
     def verify_game_ends(self):
         if self.turns_played == self.rounds:

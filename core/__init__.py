@@ -5,5 +5,4 @@ from core.game import Game
 from core.game_easy import GameEasy
 from core.game_normal import GameNormal
 from core.game_hard import GameHard
-from core.GUI.tab_mananger import WindowMananger
-
+from core.GUI.tab_manager import WindowManager

@@ -1,4 +1,3 @@
-from random import choice, randint, shuffle
 from core import Game
 
 
@@ -52,6 +51,3 @@ class GameEasy(Game):
                 return int(n) - 1
             else:
                 print(n, "no es una opción válida")
-
-
-

@@ -10,7 +10,16 @@ class WindowBase(tk.Frame):
 
     def __init__(self, master=None, **kwargs):
         super().__init__(master)
-
+        self.sentence_var = None
+        self.lb_sentence = None
+        self.in_answer = None
+        self.bt_play = None
+        self.turns_passed = None
+        self.lb_turns = None
+        self.hint_var = None
+        self.lb_hint = None
+        self.reverse_option = None
+        self.source, self.target, self.options = None, None, None
         self.ans_error_path = "others/sounds/error.mp3"
         self.ans_correct_path = "others/sounds/correct.mp3"
         self.master.title(f"Dificultad {kwargs['difficulty']}")
@@ -80,12 +89,6 @@ class WindowBase(tk.Frame):
         self.sentence_var.set(sentence)
         self.lb_sentence.config(textvariable=self.sentence_var)
 
-    def send_button_action(self, event=None):
-        print("picaste el boton probar")
-
-    def verify_answer(self):
-        print("intentas verificar la respuesta")
-
     def verify_answer(self):
         if self.in_answer.get() == self.target:
             self.game.points += 1
@@ -96,3 +99,23 @@ class WindowBase(tk.Frame):
             playsound(self.ans_error_path)
         if not self.reverse_option:
             self.game.language.reproduce_text(self.target)
+
+    def send_button_action(self, event=None):
+
+        if self.button_flag:
+            self.turns_played += 1
+            self.verify_answer()
+            self.in_answer.delete("0", tk.END)
+            self.bt_play.config(text="Continuar", bg="turquoise")
+            self.button_flag = False
+            self.in_answer.config(state="disable")
+            self.update_turns_passed()
+        else:
+            self.button_flag = True
+            self.in_answer.config(state="normal")
+            self.bt_play.config(text="Probar", bg="bisque")
+            self.update_hint(":)")
+            self.verify_game_ends()
+
+    def verify_game_ends(self):
+        pass
