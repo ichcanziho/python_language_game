@@ -3,6 +3,7 @@ import tkinter as tk
 from pathlib import Path
 import json
 from core.GUI.win_medium import WindowMedium
+from core.GUI.win_hard import WindowHard
 
 
 class TabPlay:
@@ -29,10 +30,13 @@ class TabPlay:
         self.bt_play.pack(pady=50)
 
     def open_game_window(self):
-
+        with open("settings.json") as json_file:
+            self.current_settings = json.load(json_file)
         window_game = tk.Tk()
         if self.current_settings["difficulty"] == "med":
             game = WindowMedium(window_game, **self.current_settings)
+        elif self.current_settings["difficulty"] == "hard":
+            game = WindowHard(window_game, **self.current_settings)
 
         game.mainloop()
 

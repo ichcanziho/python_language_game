@@ -124,6 +124,7 @@ class TabSettings:
             self.categories = ['None']
 
     def update_settings(self):
+        messagebox.showinfo("Correcto", "Configuraciones guardadas :D")
         values = json.dumps(self.current_settings)
         file = open("settings.json", "w")
         file.write(values)
