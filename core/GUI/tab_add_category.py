@@ -16,7 +16,22 @@ class TabAddCategory:
 
         self.languages = None
         self.categories = None
-
+        self.target_lang = None
+        self.inputs_frame = None
+        self.lb_base_lang = None
+        self.textBox_source = None
+        self.lb_target_lang = None
+        self.textBox_output = None
+        self.languages_box = None
+        self.lb_language = None
+        self.in_category = None
+        self.bt_search = None
+        self.modes = None
+        self.lb_modes = None
+        self.modes_box = None
+        self.bt_save = None
+        self.flag_error_manual = None
+        self.lb_category = None
         self.settings_frame = tk.LabelFrame(self.window, text="Ajustes")
         self.settings_frame.grid(row=0, column=0, padx=10)
 
@@ -47,13 +62,13 @@ class TabAddCategory:
         self.lb_base_lang = tk.Label(self.inputs_frame, text="es")
         self.lb_base_lang.grid(row=0, column=0)
 
-        self.textBox_source = scrolledtext.ScrolledText(self.inputs_frame, height=9.5, width=10)
+        self.textBox_source = scrolledtext.ScrolledText(self.inputs_frame, height=9.5, width=14)
         self.textBox_source.grid(row=1, column=0)
 
         self.lb_target_lang = tk.Label(self.inputs_frame, text=self.target_lang)
         self.lb_target_lang.grid(row=0, column=1)
 
-        self.textBox_output = scrolledtext.ScrolledText(self.inputs_frame, height=9.5, width=10)
+        self.textBox_output = scrolledtext.ScrolledText(self.inputs_frame, height=9.5, width=14)
         self.textBox_output.grid(row=1, column=1)
 
     def make_languages_box(self):
@@ -145,7 +160,6 @@ class TabAddCategory:
             if self.modes_box.get() == "auto":
                 self.textBox_output.config(state="disable")
 
-
     def check_for_category(self):
         path = f'languages/{self.languages_box.get()}/{self.in_category.get()}'
         file = Path(path)
@@ -171,7 +185,6 @@ class TabAddCategory:
         if self.modes_box.get() == "auto":
             self.textBox_output.config(state="disable")
 
-
     def language_changed(self, event):
         self.target_lang = self.languages_box.get().split("_")[0]
         self.manual_mode = {"es": ["hola"], self.target_lang: ["hi"]}
@@ -182,8 +195,6 @@ class TabAddCategory:
 
         self.lb_target_lang = tk.Label(self.inputs_frame, text=self.target_lang)
         self.lb_target_lang.grid(row=0, column=1)
-
-
 
     def mode_changed(self, event):
         if self.modes_box.get() == "manual":

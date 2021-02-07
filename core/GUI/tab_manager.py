@@ -11,6 +11,7 @@ class WindowManager(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master.title("Python Language Game by Ichcanziho")
+        self.master.iconphoto(False, tk.PhotoImage(file='others/icono.png'))
         nb = ttk.Notebook(self.master)
         nb.pack(fill='both', expand='yes')
         TabPlay(nb)

@@ -37,6 +37,7 @@ class WindowBase(tk.Frame):
 
         self.turns_played = 0
         self.button_flag = True
+
         self.master.bind("<Return>", self.send_button_action)
 
     def make_sentence_label(self):
