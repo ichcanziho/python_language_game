@@ -27,25 +27,13 @@ class WindowMedium(WindowBase):
             self.bt_play.config(text="Continuar", bg="turquoise")
             self.button_flag = False
             self.in_answer.config(state="disable")
+            self.update_turns_passed()
         else:
             self.button_flag = True
             self.in_answer.config(state="normal")
             self.bt_play.config(text="Probar", bg="bisque")
             self.update_hint(":)")
-            self.update_turns_passed()
             self.verify_game_ends()
-
-    def verify_answer(self):
-        if self.in_answer.get() == self.target:
-            self.game.points += 1
-            self.update_hint("correcto :D")
-            playsound(self.ans_correct_path)
-
-        else:
-            self.update_hint(f'{self.source} es {self.target}')
-            playsound(self.ans_error_path)
-        if not self.reverse_option:
-            self.game.language.reproduce_text(self.target)
 
     def verify_game_ends(self):
         if self.turns_played == self.rounds:

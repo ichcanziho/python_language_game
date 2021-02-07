@@ -3,6 +3,7 @@ from random import choice
 from core import GameNormal
 from core import GameHard
 from core import GameEasy
+from playsound import playsound
 
 
 class WindowBase(tk.Frame):
@@ -85,5 +86,13 @@ class WindowBase(tk.Frame):
     def verify_answer(self):
         print("intentas verificar la respuesta")
 
-    def verify_game_ends(self):
-        print("intentas verificar que el juego halla terminado")
+    def verify_answer(self):
+        if self.in_answer.get() == self.target:
+            self.game.points += 1
+            self.update_hint("correcto :D")
+            playsound(self.ans_correct_path)
+        else:
+            self.update_hint(f'{self.source} es {self.target}')
+            playsound(self.ans_error_path)
+        if not self.reverse_option:
+            self.game.language.reproduce_text(self.target)

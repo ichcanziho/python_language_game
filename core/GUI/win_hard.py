@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from playsound import playsound
+
 from core.GUI.win_base import WindowBase
 from core import VoiceRecognition
 
@@ -62,29 +62,16 @@ class WindowHard(WindowBase):
             self.turns_played += 1
             self.verify_answer()
             self.in_answer.delete("0", tk.END)
-
             self.bt_play.config(text="Continuar", bg="turquoise")
             self.button_flag = False
             self.in_answer.config(state="disable")
+            self.update_turns_passed()
         else:
             self.button_flag = True
-
             self.in_answer.config(state="normal")
             self.bt_play.config(text="Probar", bg="bisque")
             self.update_hint(":)")
-            self.update_turns_passed()
             self.verify_game_ends()
-
-    def verify_answer(self):
-        if self.in_answer.get() == self.target:
-            self.game.points += 1
-            self.update_hint("correcto :D")
-            playsound(self.ans_correct_path)
-        else:
-            self.update_hint(f'{self.source} es {self.target}')
-            playsound(self.ans_error_path)
-        if not self.reverse_option:
-            self.game.language.reproduce_text(self.target)
 
     def verify_game_ends(self):
         if self.turns_played == self.rounds:

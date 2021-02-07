@@ -4,6 +4,7 @@ from pathlib import Path
 import json
 from core.GUI.win_medium import WindowMedium
 from core.GUI.win_hard import WindowHard
+from core.GUI.win_easy import WindowEasy
 
 
 class TabPlay:
@@ -37,9 +38,9 @@ class TabPlay:
             game = WindowMedium(window_game, **self.current_settings)
         elif self.current_settings["difficulty"] == "hard":
             game = WindowHard(window_game, **self.current_settings)
-
+        else:
+            game = WindowEasy(window_game, **self.current_settings)
         game.mainloop()
-
 
     @staticmethod
     def set_default_settings():
